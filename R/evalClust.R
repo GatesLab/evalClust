@@ -9,7 +9,7 @@ library(mcclust) # move this to somewhere else?
 library(dils)
 library(igraph)
 
-evalClust <- function(sym.matrix, type = "count"){
+evalClust <- function(sym.matrix, type){
   
   if (is.igraph(sym.matrix))
   { g <- sym.matrix # only recommended for count graphs; for correlation or those with (-) read in matrix

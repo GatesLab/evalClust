@@ -3,19 +3,19 @@
 # only undirected, weighted graphs are considered here.
 # nperturb is the number of edges to perturb.
 # matrix is the symmetric graph to rewire.
-rewirematrix <- function(matrix, nperturb, type)
+rewirematrix <- function(sym.matrix, nperturb, type)
 {
-  diag(matrix) <- 0
-  matrix[which(matrix < 0)] = 0 # set negative values to zero; not considered in most comm. det. approaches
+  diag(sym.matrix) <- 0
+  sym.matrix[which(sym.matrix < 0)] = 0 # set negative values to zero; not considered in most comm. det. approaches
   eligable <-
-    which(lower.tri(matrix), arr.ind = T)#ensure that diagonal isn't considered, and all potential edges are
+    which(lower.tri(sym.matrix), arr.ind = T)#ensure that diagonal isn't considered, and all potential edges are
   toalter <- sample(1:length(eligable[, 1]), nperturb)
-  new.v <- matrix
+  new.v <- sym.matrix
   if (type == "count") {
     W <-
-      sum(colSums(matrix)) / 2 # sum of strengths; divide by two since undirected
+      sum(colSums(sym.matrix)) / 2 # sum of strengths; divide by two since undirected
     # Optimal parameter choice - retain overall weight, not edge number; Garlaschelli 2009
-    pstar <- (2 * W) / (length(matrix[, 1]) * (length(matrix[, 1]) - 1) +
+    pstar <- (2 * W) / (length(sym.matrix[, 1]) * (length(sym.matrix[, 1]) - 1) +
                           2 * W)
     for (l in 1:length(toalter)) {
       # new.v[eligable[toalter[l],1],eligable[toalter[l],2]]<- 0
