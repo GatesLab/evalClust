@@ -28,8 +28,7 @@ rewirematrix <- function(matrix, nperturb, type)
       new.v[eligable[toalter[l], 1], eligable[toalter[l], 2]] <-
         toadd
       }
-    elseif (type == "cov")
-    {
+    } else{
       if (length(toalter)>1)
       {
         randomized <- sample(toalter)
@@ -39,7 +38,6 @@ rewirematrix <- function(matrix, nperturb, type)
       for (l in 1:length(randomized))
         new.v[eligable[toalter[l],1],eligable[toalter[l],2]]<- new.v[[eligable[randomized[l],1],eligable[randomized[l],2]]] 
     }
-  }
   new.v[upper.tri(new.v)] <-
     t(new.v)[upper.tri(new.v)] # maintain symmetry
   return(as.data.frame(new.v))
