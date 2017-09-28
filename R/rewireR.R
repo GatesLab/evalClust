@@ -5,9 +5,7 @@
 # matrix is the symmetric graph to rewire.
 rewirematrix <- function(sym.matrix, nperturb, type)
 {
-  diag(sym.matrix) <- 0
-  sym.matrix[which(sym.matrix < 0)] = 0 # set negative values to zero; not considered in most comm. det. approaches
-  eligable <-
+   eligable <-
     which(lower.tri(sym.matrix), arr.ind = T)#ensure that diagonal isn't considered, and all potential edges are
   toalter <- sample(1:length(eligable[, 1]), nperturb)
   new.v <- sym.matrix
@@ -28,7 +26,7 @@ rewirematrix <- function(sym.matrix, nperturb, type)
       new.v[eligable[toalter[l], 1], eligable[toalter[l], 2]] <-
         toadd
       }
-    } else{
+    } else if (type == "cov") { #need to update - P.J. Brown 1994 has covariance analogue 
       if (length(toalter)>1)
       {
         randomized <- sample(toalter)
@@ -37,8 +35,11 @@ rewirematrix <- function(sym.matrix, nperturb, type)
       }
       for (l in 1:length(randomized))
         new.v[eligable[toalter[l],1],eligable[toalter[l],2]]<- new.v[[eligable[randomized[l],1],eligable[randomized[l],2]]] 
+    } else if (type == "cor") {
+      for (l in 1:length(toalter))
+      new.v[eligable[toalter[l],1], eligable[toalter[l],2]] <- rjm(sym.matrix, 1, row = eligable[toalter[l],1], col = eligable[toalter[l],2])
     }
-  new.v[upper.tri(new.v)] <-
-    t(new.v)[upper.tri(new.v)] # maintain symmetry
+  for (l in 1:length(toalter))
+    new.v[eligable[toalter[l],2], eligable[toalter[l],1]] <- new.v[eligable[toalter[l],1], eligable[toalter[l],2]] 
   return(as.data.frame(new.v))
 }
