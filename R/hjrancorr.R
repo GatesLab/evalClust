@@ -25,15 +25,14 @@ rcorrmatrix<-function(d,alphad=1)
   { rho<-runif(1,-1,1)
   rr<-matrix(c(1,rho,rho,1),2,2); return(rr) 
   }
-  
   rr<-matrix(0,d,d)
   diag(rr)<-1
-  for(i in 1:(d-1)) # along second diagonal, upper & lower
-  { alp<-alphad+(d-2)/2            #parameter for beta distribution
-  rr[i,i+1]<-2*rbeta(1,alp,alp)-1  #random draw 
+  for(i in 1:(d-1)) 
+  { alp<-alphad+(d-2)/2
+  rr[i,i+1]<-2*rbeta(1,alp,alp)-1
   rr[i+1,i]<-rr[i,i+1]
   }
-  for(m in 2:(d-1))  # for the remaining elements
+  for(m in 2:(d-1))
   { for(j in 1:(d-m))
   { rsub<-rr[j:(j+m),j:(j+m)]
   #print(rsub)
@@ -47,19 +46,15 @@ rcorrmatrix<-function(d,alphad=1)
 
 # rsub is a symmetrix matrix, alp is a beta parameter
 # generate the correlation for the (j,j+m) component
-rjm<-function(rsub,alp, row, col)
-{ #b<-nrow(rsub)     # b is dimension 
-ii<-1:nrow(rsub)
-ii <- ii[-c(row, col)]
-r1<-rsub[ii,row]
-r3<-rsub[ii,col]
-# ii <- 2:(b-1)
-# r1 <- rsub[ii,1]
-# r3 <- rsub[ii,b]
+rjm<-function(rsub,alp)
+{ b<-nrow(rsub)
+ii<-2:(b-1)
+r1<-rsub[ii,1]
+r3<-rsub[ii,b]
 R2<-rsub[ii,ii]
-Ri<-solve(R2)       #partial correlation matrix; WHY GREATER THAN 1?!!!!
-rcond<-2*rbeta(1,alp,alp)-1      #draw from beta parameter
-tem13<-t(r1)%*%Ri%*%r3  
+Ri<-solve(R2)
+rcond<-2*rbeta(1,alp,alp)-1
+tem13<-t(r1)%*%Ri%*%r3
 tem11<-t(r1)%*%Ri%*%r1
 tem33<-t(r3)%*%Ri%*%r3
 res<-tem13+rcond*sqrt((1-tem11)*(1-tem33))

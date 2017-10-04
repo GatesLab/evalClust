@@ -24,7 +24,7 @@ evalClust <- function(sym.matrix, type){
   truemembership          <- walktrap.community(g, weights = E(g)$weight, steps = 4)$membership
   
   # now randomly perturb and rewire
-  reps <- 10
+  reps <-100
   
   n.elements <- length(sym.matrix[,1])*(length(sym.matrix[,1])-1)/2
   percent <-seq(from=0, to = n.elements, by=max(round(0.02*(n.elements)), 1)) #disrupt 2% at a time
@@ -35,14 +35,13 @@ evalClust <- function(sym.matrix, type){
   VI[,1] <- 0 #when 0 edges are disrupted no variation of information
   ARI[,1]<- 1 #when 0 edges are disrupted ARI = 1
   
-  for(k in 2:(length(percent)/2)) {
+  for(k in 1:(length(percent))) {
     for(p in 1:reps){ # for each degree of perturbation run 100 times
       new.v <- as.matrix(rewirematrix(sym.matrix, percent[k], type))
       diag(new.v)        <- 0
       new.v[new.v< 0] <- 0
       new.g                  <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
       clust.sol       <-  walktrap.community(new.g, weights = E(new.g)$weight)
-      #saveRDS(new.v, "~/Dropbox/Perturb/Aidan Data/eval output/stoppedwalk.RDS")
       membership       <- clust.sol$membership
       modularity.value[p,k] <- modularity(clust.sol)
       # ARI and VI for comparison of this.g and membership in original
@@ -60,12 +59,13 @@ evalClust <- function(sym.matrix, type){
   VI.rando[,1] <- 0 #when 0 edges are disrupted no variation of information
   ARI.rando[,1]<- 1 #when 0 edges are disrupted ARI = 1
   
-  for(k in 2:length(percent)) {
-    for(p in 1:reps){ # for each degree of perturbation run 100 times
+  for(k in 2 :length(percent)) {
+    for(p in 1:10){ # run only 10 times since it's pretty consistently low
       new.v <-  as.matrix(rewirematrix(rando, percent[k], type))
-      new.g                  <- graph.adjacency(new.v, mode = "undirected", weighted = TRUE)
+      diag(new.v)        <- 0
+      new.v[new.v< 0] <- 0
+      new.g                  <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
       clust.sol       <-  walktrap.community(new.g, weights = E(new.g)$weight, steps = 4)
-      #saveRDS(new.v, "~/Dropbox/Perturb/Aidan Data/eval output/stoppedwalk.RDS")
       membership       <- clust.sol$membership
       modularity.rando[p,k] <- modularity(clust.sol)
       ## ARI and VI for comparison of this.g and membership in original
@@ -98,9 +98,9 @@ evalClust <- function(sym.matrix, type){
   rep20vi <- matrix(vi.dist(changed20, truemembership), 1, length(percent))
   
   plotARI <- plot(percentlab, colMeans(ARI), col = "black", main = "Comparison of original result against perturbed graphs: ARI", xlab = "Proportion Perturbed", ylab = "Mean ARI")
-  plotARI <-  points(percentlab, colMeans(ARI.rando), col = "red") + lines(percentlab, rep10ari) + lines(percentlab, rep20ari)
+  plotARI <-  points(percentlab, colMeans(ARI.rando[1:10,]), col = "red") + lines(percentlab, rep10ari) + lines(percentlab, rep20ari)
   
-  plotVI <- plot(percentlab, colMeans(VI.rando), col = "red", main = "Comparison of original result against perturbed graphs: VI", xlab = "Proportion Perturbed", ylab = "Mean VI")
+  plotVI <- plot(percentlab, colMeans(VI.rando[1:10,]), col = "red", main = "Comparison of original result against perturbed graphs: VI", xlab = "Proportion Perturbed", ylab = "Mean VI")
   plotVI <- plotVI + points(percentlab, colMeans(VI), col = "black") + lines(percentlab, rep10vi) + lines(percentlab, rep20vi)
   
   res <- list(

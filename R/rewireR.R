@@ -3,9 +3,12 @@
 # only undirected, weighted graphs are considered here.
 # nperturb is the number of edges to perturb.
 # matrix is the symmetric graph to rewire.
+
+source('~/Dropbox/GitHub/evalClust2/R/hjrancorr2.R')
+
 rewirematrix <- function(sym.matrix, nperturb, type)
 {
-   eligable <-
+  eligable <-
     which(lower.tri(sym.matrix), arr.ind = T)#ensure that diagonal isn't considered, and all potential edges are
   toalter <- sample(1:length(eligable[, 1]), nperturb)
   new.v <- sym.matrix
@@ -25,20 +28,22 @@ rewirematrix <- function(sym.matrix, nperturb, type)
       }
       new.v[eligable[toalter[l], 1], eligable[toalter[l], 2]] <-
         toadd
-      }
-    } else if (type == "cov") { #need to update - P.J. Brown 1994 has covariance analogue 
-      if (length(toalter)>1)
-      {
-        randomized <- sample(toalter)
-      } else {
-        randomized <- toalter
-      }
-      for (l in 1:length(randomized))
-        new.v[eligable[toalter[l],1],eligable[toalter[l],2]]<- new.v[[eligable[randomized[l],1],eligable[randomized[l],2]]] 
-    } else if (type == "cor") {
-      for (l in 1:length(toalter))
-      new.v[eligable[toalter[l],1], eligable[toalter[l],2]] <- rjm(sym.matrix, 1, row = eligable[toalter[l],1], col = eligable[toalter[l],2])
     }
+  } else if (type == "cov") { #need to update - P.J. Brown 1994 has covariance analogue 
+    if (length(toalter)>1)
+    {
+      randomized <- sample(toalter)
+    } else {
+      randomized <- toalter
+    }
+    for (l in 1:length(randomized))
+      new.v[eligable[toalter[l],1],eligable[toalter[l],2]]<- new.v[[eligable[randomized[l],1],eligable[randomized[l],2]]] 
+  } else if (type == "cor") {
+    for (l in 1:length(toalter))
+      # new.v[eligable[toalter[l],1], eligable[toalter[l],2]] <- rjm2(sym.matrix, row = eligable[toalter[l],1], col = eligable[toalter[l],2])
+      # the above doesn't return totally random matrices. Try by sorting the "toalter" and doing it in a partial way like the original scripts.
+      new.v[eligable[toalter[l],1], eligable[toalter[l],2]] <- rcorrmatrix(2)[1,2]   
+  }
   for (l in 1:length(toalter))
     new.v[eligable[toalter[l],2], eligable[toalter[l],1]] <- new.v[eligable[toalter[l],1], eligable[toalter[l],2]] 
   return(as.data.frame(new.v))
