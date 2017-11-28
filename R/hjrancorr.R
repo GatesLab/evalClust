@@ -37,7 +37,7 @@ rcorrmatrix<-function(d,alphad=1)
   { rsub<-rr[j:(j+m),j:(j+m)]
   #print(rsub)
   alp<-alphad+(d-1-m)/2
-  rr[j,j+m]<-rjm(rsub,alp)
+  rr[j,j+m]<-rjm(rsub,alp, meansym)
   rr[j+m,j]<-rr[j,j+m]
   }
   }
