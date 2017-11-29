@@ -6,9 +6,10 @@
 #' @param plot Logical, defaults to TRUE
 #' @param resolution The percentage of edges to iteratively alter. One percent is default, increase to go quicker. 
 #' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker. 
-#' @examples #Reps should be 100.  Reps set equal to 1, so example can run more quickly.
-#' perturbR(exampledata, plot=TRUE, resolution=0.01, reps=1)
-#' @keywords evalClust
+#' @export evalClust
+#' @examples 
+#' evalClust(exampledata, plot=TRUE, resolution=0.01, reps=1)
+
 
 evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   
