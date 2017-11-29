@@ -1,8 +1,8 @@
 #' #' @name perturb
 #' #' @title Perturb networks and evaluate subgroup structures.
 #' #' @description Randomly rewires networks in increasing degrees of
-#'    perturbation to evaluate stability of cluster solutions.
-#' #' @param sym.matrix A symmetric, weighted sym.matrix or weighted graph
+#'    perturbation to evaluate stability of community solutions obtained from Walktrap.
+#' #' @param sym.matrix A symmetric, weighted matrix or graph object
 #' #' @param plot Logical, defaults to TRUE
 #' #' @param resolution The percentage of edges to iteratively alter. One percent is default, increase to go quicker. 
 #' #' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker.   
@@ -31,13 +31,13 @@ evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   
   # now randomly perturb and rewire
   
-  n.elements       <- length(sym.matrix[,1])*(length(sym.matrix[,1])-1)/2
-  percent          <- seq(from=0, to = n.elements, by=max(round(resolution*(n.elements)), 1)) #disrupt 2% at a time
+  n.elements       <- length(sym.matrix[,1])*(length(sym.matrix[,1])-1)/2 #number of unique elements; symmetric
+  percent          <- seq(from=0, to = n.elements, by=max(round(resolution*(n.elements)), 1)) #perturb 1% at a time
   VI               <- matrix(, nrow = reps, ncol = length(percent))
   ARI              <- matrix(, nrow = reps,ncol = length(percent))
   modularity.value <- matrix(,nrow = reps, ncol = length(percent))
-  VI[,1]           <- 0 # when 0 edges are disrupted no variation of information
-  ARI[,1]          <- 1 # when 0 edges are disrupted ARI = 1
+  VI[,1]           <- 0 # when 0 edges are perturbed no variation of information
+  ARI[,1]          <- 1 # when 0 edges are perturbed ARI = 1
   iters            <- seq(1,length(percent))
 
   for(p in 1:reps){ # for each degree of perturbation run 100 times
