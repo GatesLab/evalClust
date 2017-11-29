@@ -38,7 +38,7 @@ evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   modularity.value <- matrix(,nrow = reps, ncol = length(percent))
   VI[,1]           <- 0 # when 0 edges are disrupted no variation of information
   ARI[,1]          <- 1 # when 0 edges are disrupted ARI = 1
-  �iters            <- seq(1,length(percent))
+  iters            <- seq(1,length(percent))
 
   for(p in 1:reps){ # for each degree of perturbation run 100 times
     
