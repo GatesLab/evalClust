@@ -8,12 +8,12 @@
 #' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker. 
 #' @export evalClust
 #' @examples 
-#' evalClust(exampledata, plot=TRUE, resolution=0.01, reps=1)
+#' evalClust(exampledata, plot=TRUE, resolution=0.01, reps=100)
 
 
 evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   
-  if (!isSymmetric(sym.matrix)){ 
+  if (!isSymmetric(unname(sym.matrix))){ 
     # only recommended for count graphs; 
     # for correlation or those with (-) read in matrix
     #g <- sym.matrix 

@@ -21,5 +21,5 @@ Randomly rewires networks in increasing degrees of
    perturbation to evaluate stability of community solutions obtained from Walktrap.
 }
 \examples{
-evalClust(exampledata, plot=TRUE, resolution=0.01, reps=1)
+evalClust(exampledata, plot=TRUE, resolution=0.01, reps=2)
 }
