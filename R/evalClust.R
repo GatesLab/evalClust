@@ -1,22 +1,24 @@
-#' #' @name perturb
-#' #' @title Perturb networks and evaluate subgroup structures.
-#' #' @description Randomly rewires networks in increasing degrees of
+#' @name perturb
+#' @title Perturb networks and evaluate subgroup structures.
+#' @description Randomly rewires networks in increasing degrees of
 #'    perturbation to evaluate stability of community solutions obtained from Walktrap.
-#' #' @param sym.matrix A symmetric, weighted matrix or graph object
-#' #' @param plot Logical, defaults to TRUE
-#' #' @param resolution The percentage of edges to iteratively alter. One percent is default, increase to go quicker. 
-#' #' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker.   
-library(mcclust) # move this to somewhere else?
-library(dils)
-library(igraph)
+#' @param sym.matrix A symmetric, weighted matrix or graph object
+#' @param plot Logical, defaults to TRUE
+#' @param resolution The percentage of edges to iteratively alter. One percent is default, increase to go quicker. 
+#' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker. 
+#' @examples #Reps should be 100.  Reps set equal to 1, so example can run more quickly.
+#' perturbR(exampledata, plot=TRUE, resolution=0.01, reps=1)
+#' @keywords evalClust
 
 evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   
-  if (is.igraph(sym.matrix)){ 
+  if (!isSymmetric(sym.matrix)){ 
     # only recommended for count graphs; 
     # for correlation or those with (-) read in matrix
-    g <- sym.matrix 
-    sym.matrixg <- as.sym.matrix( get.adjacency(g, attr = "weight"))
+    #g <- sym.matrix 
+    #sym.matrixg <- as.sym.matrix( get.adjacency(g, attr = "weight"))
+    
+    stop(paste("Symmetric matrix required."))
     
   } else{
     
