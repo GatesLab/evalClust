@@ -130,9 +130,9 @@ evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
     percentlab <- percent/n.elements
   
     plotARI <- plot(percentlab, colMeans(ARI), col = "black", main = "Comparison of original result against perturbed graphs: ARI", xlab = "Proportion Perturbed", ylab = "Mean ARI")
-    plotARI <-  points(percentlab, colMeans(ARI.rando[1:10,]), col = "red") + lines(percentlab, rep10ari) + lines(percentlab, rep20ari)
+    plotARI <-  points(percentlab, colMeans(ARI.rando), col = "red") + lines(percentlab, rep10ari) + lines(percentlab, rep20ari)
     
-    plotVI <- plot(percentlab, colMeans(VI.rando[1:10,]), col = "red", main = "Comparison of original result against perturbed graphs: VI", xlab = "Proportion Perturbed", ylab = "Mean VI")
+    plotVI <- plot(percentlab, colMeans(VI.rando), col = "red", main = "Comparison of original result against perturbed graphs: VI", xlab = "Proportion Perturbed", ylab = "Mean VI")
     plotVI <- plotVI + points(percentlab, colMeans(VI), col = "black") + lines(percentlab, rep10vi) + lines(percentlab, rep20vi)
   }
   

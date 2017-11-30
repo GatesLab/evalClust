@@ -5,7 +5,10 @@
 #' and compares the resulting rewired networks with the orignal. 
 #' These comparisons aid in understanding the stability of the 
 #' cluster solution. 
-#' @author {KM Gates [aut, cre],\cr}
+#' @author {KM Gates [aut, cre],\cr
+#'     Zachary Fisher [aut], \cr
+#'     Cara Arizmendi [aut]	
+#'	}
 #' Maintainer: KM Gates \email{gateskm@email.unc.edu}
 #' @import mcclust dils igraph ggplot2
 #' @importFrom graphics lines points
