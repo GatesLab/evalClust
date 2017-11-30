@@ -10,7 +10,10 @@ These comparisons aid in understanding the stability of the
 cluster solution.
 }
 \author{
-{KM Gates [aut, cre],\cr}
+{KM Gates [aut, cre],\cr
+    Zachary Fisher [aut], \cr
+    Cara Arizmendi [aut]	
+}
 Maintainer: KM Gates \email{gateskm@email.unc.edu}
 }
 \keyword{perturbR}

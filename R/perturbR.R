@@ -1,17 +1,18 @@
-#' @name perturb
+#' @name perturbR
+#' @aliases evalClust
 #' @title Perturb networks and evaluate subgroup structures.
 #' @description Randomly rewires networks in increasing degrees of
 #'    perturbation to evaluate stability of community solutions obtained from Walktrap.
-#' @param sym.matrix A symmetric, weighted matrix or graph object
+#' @param sym.matrix A symmetric, weighted matrix object
 #' @param plot Logical, defaults to TRUE
 #' @param resolution The percentage of edges to iteratively alter. One percent is default, increase to go quicker. 
 #' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker. 
-#' @export evalClust
+#' @export perturbR
 #' @examples 
-#' evalClust(exampledata, plot=FALSE, resolution=0.10, reps=1)
+#' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1)
 
 
-evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
+perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   
   if (!isSymmetric(unname(sym.matrix))){ 
     # only recommended for count graphs; 

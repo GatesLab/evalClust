@@ -3,7 +3,6 @@
 # only undirected, weighted graphs are considered here.
 # nperturb is the number of edges to perturb.
 # matrix is the symmetric graph to rewire.
-#source('~/Dropbox/GitHub/evalClust2/R/hjrancorr2.R')
 
 rewirematrix <- function(sym.matrix, nperturb)
 {

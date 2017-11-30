@@ -1,13 +1,14 @@
 Package: perturbR
 Type: Package
-Title: Perturb Networks
+Title: PerturbR
 Version: 0.1.0
 Author: KM Gates [aut, cre]
 Maintainer: KM Gates <gateskm@email.unc.edu>
-Description: The perturbR function incrementally perturbs networks 
-    and compares the resulting rewired networks with the orignal. 
+Description: The perturbR function incrementally perturbs network edges 
+    and compares the resulting community detection solutions 
+    from the rewired networks with the solution found for the original network. 
     These comparisons aid in understanding the stability of the 
-    cluster solution. 
+    original solution. The package requires symmetric, weighted (specifically, count) matrices/networks.
 Imports: mcclust, dils, igraph, ggplot2
 License: GPL-2
 Encoding: UTF-8
