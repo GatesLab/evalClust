@@ -8,7 +8,7 @@
 #' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker. 
 #' @export evalClust
 #' @examples 
-#' evalClust(exampledata, plot=TRUE, resolution=0.01, reps=100)
+#' evalClust(exampledata, plot=FALSE, resolution=0.10, reps=1)
 
 
 evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
