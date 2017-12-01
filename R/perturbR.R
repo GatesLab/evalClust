@@ -75,12 +75,16 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   max       <- which(lengths == max(lengths))
   perc10    <- round(.10*length(truemembership))
   perc20    <- round(.20*length(truemembership))
-  tochange  <- which(truemembership == comms[max])
+  tochange  <- which(truemembership == comms[max[1]])
   changed10 <- truemembership
+  
+  mincomm <- which(lengths == min(lengths))
+  if (length(mincomm)>1)
+    mincomm <- mincomm[2]
   
   for (p in 1:perc10){
     
-    changed10[tochange[p]] <- comms[sample(which(lengths == min(lengths)[1]), 1)]
+    changed10[tochange[p]] <- comms[mincomm]
     
   }
   
@@ -90,7 +94,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   
   for (p in 1:perc20){
     
-    changed20[tochange[p]] <- comms[sample(which(lengths == min(lengths)[1]), 1)]
+    changed20[tochange[p]] <- comms[mincomm]
     
   }
   

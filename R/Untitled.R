@@ -1,5 +1,0 @@
-files <- list.files("/Users/kgates/Dropbox/Subgroup MIIV fMRI project/Data/FaceMotor_chopped_MotorOnly_chopped")
-setwd("/Users/kgates/Dropbox/Subgroup MIIV fMRI project/Data/FaceMotor_chopped_MotorOnly_chopped")
-dataReduc <- list()
-for (p in 1:60)
-  dataReduc[[p]] <- read.csv(files[p])
