@@ -40,6 +40,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   VI               <- matrix(, nrow = reps, ncol = length(percent))
   ARI              <- matrix(, nrow = reps,ncol = length(percent))
   modularity.value <- matrix(,nrow = reps, ncol = length(percent))
+  modularity.value[,1] <- modularity(walktrap.community(g, weights = E(g)$weight, steps = 4))
   VI[,1]           <- 0 # when 0 edges are perturbed no variation of information
   ARI[,1]          <- 1 # when 0 edges are perturbed ARI = 1
   iters            <- seq(1,length(percent))
@@ -77,14 +78,11 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   perc20    <- round(.20*length(truemembership))
   tochange  <- which(truemembership == comms[max[1]])
   changed10 <- truemembership
-  
-  mincomm <- which(lengths == min(lengths))
-  if (length(mincomm)>1)
-    mincomm <- mincomm[2]
+  comms <- comms[-max[1]]
   
   for (p in 1:perc10){
     
-    changed10[tochange[p]] <- comms[mincomm]
+    changed10[tochange[p]] <- comms[sample(length(comms), 1)] #randomly select which one it gets assigned
     
   }
   
@@ -94,7 +92,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   
   for (p in 1:perc20){
     
-    changed20[tochange[p]] <- comms[mincomm]
+    changed20[tochange[p]] <- comms[sample(length(comms), 1)]
     
   }
   
@@ -108,6 +106,11 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   plotVI           <- NULL
   plotARI          <- NULL
   percentlab       <- NULL
+  
+  diag(new.v)      <- 0
+  new.v[new.v< 0]  <- 0
+  new.g            <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
+  modularity.rando[,1]       <-  modularity(walktrap.community(new.g, weights = E(new.g)$weight, steps = 4))
   
   if (plot == TRUE){
 
@@ -141,6 +144,9 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
     plotVI <- plotVI + points(percentlab, colMeans(VI), col = "black") + lines(percentlab, rep10vi) + lines(percentlab, rep20vi)
   }
   
+  distribution <- sort(as.matrix(modularity.rando[,length(percent)]))
+  cutoff <- distribution[round(length(distribution)*.95)]
+  
   res <- list(
     VI  = VI, # only one column if Plot == FALSE; column is the 20% perturb point
     ARI = ARI,
@@ -154,7 +160,8 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
     ari20mark = rep20ari[1],
     vi20mark = rep20vi[1],
     plotVI = plotVI,
-    plotARI = plotARI
+    plotARI = plotARI,
+    cutoff = cutoff
   )
   return(res)
 }
