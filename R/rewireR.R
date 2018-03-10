@@ -7,14 +7,15 @@
 #' @param sym.matrix  A symmetric, sparse count matrix object.
 #' @param nperturb The number of edges to randomly alter.
 
-rewireR <- function(sym.matrix, nperturb)
+rewireR <- function(sym.matrix, nperturb, dist)
 {
   eligable <-
     which(lower.tri(sym.matrix), arr.ind = T)#ensure that diagonal isn't considered, and all potential edges are
   toalter <- sample(1:length(eligable[, 1]), nperturb)
   new.v <- sym.matrix
-#  if (type == "count") {
   maxEdge <- max(sym.matrix)
+  #  if (type == "count") {
+  if (dist == "NegBinom"){
     W <-
       sum(sym.matrix[lower.tri(sym.matrix)]) # sum of strengths; 
     # Optimal parameter choice - retain overall graph weight, not edge number; Garlaschelli 2009
@@ -34,8 +35,17 @@ rewireR <- function(sym.matrix, nperturb)
       }
       new.v[eligable[toalter[l], 1], eligable[toalter[l], 2]] <-
         toadd
-    }
+    } }else {
+        if (length(toalter)>1){
+        randomized <- sample(toalter)
+        } else {
+          randomized <- toalter
+        }
+      for (l in 1:length(randomized))
+        new.v[eligable[toalter[l],1],eligable[toalter[l],2]]<- new.v[[eligable[randomized[l],1],eligable[randomized[l],2]]] 
+      }
   for (l in 1:length(toalter)) #make symmetric again
     new.v[eligable[toalter[l],2], eligable[toalter[l],1]] <- new.v[eligable[toalter[l],1], eligable[toalter[l],2]] 
   return(as.data.frame(new.v))
+  
 }

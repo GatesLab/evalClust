@@ -15,7 +15,7 @@
 #' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, cluster_assign = NULL, errbars = FALSE)
 
 
-perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100, cluster_assign = NULL, errbars = FALSE){
+perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100, cluster_assign = NULL, errbars = FALSE, dist = "NegBinom"){
   
   if (!isSymmetric(unname(sym.matrix))){ 
     # only recommended for count graphs; 
@@ -57,7 +57,7 @@ perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, re
     
     for(k in 2:length(iters)) {
       
-      new.v                 <- as.matrix(rewireR(sym.matrix, percent[iters[k]]))
+      new.v                 <- as.matrix(rewireR(sym.matrix, nperturb = percent[iters[k]], dist = dist))
       diag(new.v)           <- 0
       new.v[new.v< 0]       <- 0
       new.g                 <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
@@ -78,15 +78,16 @@ perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, re
   for (p in 1:length(comms))
     lengths[p] <- length(which(truemembership == comms[p]))
 
-  
 #  max       <- which(lengths == max(lengths))
-  comms <- unique(truemembership)
   perc10    <- round(.10*length(truemembership))
   perc20    <- round(.20*length(truemembership))
 #  tochange  <- which(truemembership == comms[max[1]])
   tochange10 <- sample(seq(1,length(sym.matrix[,1])), perc10)
   tochange20 <- sample(seq(1,length(sym.matrix[,1])), perc20)
   
+  rep10arim <- matrix(,100, 1)
+  rep10vim <- matrix(,100, 1)
+  for (k in 1:100){
   changed10 <- truemembership
 
   for (p in 1:perc10){
@@ -94,18 +95,28 @@ perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, re
     changed10[tochange10[p]] <- commchange[sample(length(commchange), 1)] #randomly select which community it gets assigned
     }
   
-  rep10ari  <- matrix(arandi(changed10, truemembership), 1, length(percent))
-  rep10vi   <- matrix(vi.dist(changed10, truemembership), 1, length(percent))
-  changed20 <- truemembership
+  rep10arim[k]  <- arandi(changed10, truemembership)
+  rep10vim[k]   <- vi.dist(changed10, truemembership)
+  }
+  rep10ari  <- matrix(mean(rep10arim), 1, length(percent))
+  rep10vi   <- matrix(mean(rep10vim), 1, length(percent))
   
+  rep20arim <- matrix(,100, 1)
+  rep20vim <- matrix(,100, 1)
+  for (k in 1:100){
+    changed20 <- truemembership
+    
   for (p in 1:perc20){
     commchange <- comms[-truemembership[tochange20[p]]]
     changed20[tochange20[p]] <- commchange[sample(length(commchange), 1)] #randomly select which community it gets assigned
   }
+    
+    rep20arim[k]  <- arandi(changed20, truemembership)
+    rep20vim[k]   <- vi.dist(changed20, truemembership)
+  }
+  rep20ari  <- matrix(mean(rep20arim), 1, length(percent))
+  rep20vi   <- matrix(mean(rep20vim), 1, length(percent))
   
-  # create random graph, rewire, compare to the above in a figure.
-  rep20ari         <- matrix(arandi(changed20, truemembership), 1, length(percent))
-  rep20vi          <- matrix(vi.dist(changed20, truemembership), 1, length(percent))
   rando            <- new.v
   VI.rando         <- matrix(,nrow = reps, ncol = length(percent))
   ARI.rando        <- matrix(,nrow = reps,ncol = length(percent))
@@ -128,7 +139,7 @@ perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, re
       
       for(p in 1:reps){ 
         
-        new.v <-  as.matrix(rewireR(rando, percent[k]))
+        new.v <-  as.matrix(rewireR(rando, nperturb = percent[k], dist = dist))
         diag(new.v)      <- 0
         new.v[new.v< 0]  <- 0
         new.g            <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
@@ -165,6 +176,7 @@ perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, re
   cutoff <- distribution[round(length(distribution)*.95)]
   
   res <- list(
+    comm.assign = truemembership,
     VI  = VI, # only one column if Plot == FALSE; column is the 20% perturb point
     ARI = ARI,
     VI.rando = VI.rando, 
