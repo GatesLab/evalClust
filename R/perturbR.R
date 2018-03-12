@@ -7,12 +7,14 @@
 #' @param plot Logical, defaults to TRUE
 #' @param resolution The percentage of edges to iteratively alter. One percent is default, increase to go quicker. 
 #' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker. 
-#' @param confirm_cluster Dataframe. Option to provide confirmatory cluster labels contained in the dataframe. Dataframe has 2 columns,
+#' @param confirm_assign Dataframe. Option to provide confirmatory cluster labels contained in the dataframe. Dataframe has 2 columns,
 #' the first referring to node number, and the second an integer variable referring to cluster label/assignment.
 #' @param errbars Logical, defaults to FALSE. Option to add error bars of one standard deviation above and below the mean for each point.
-#' @export perturbR
+#' @param dist Option to rewire in a manner that retains overall graph weight regardless of distribution of edge weights. 
+#' This option is invoked by putting any text into this field. Defaults to "NegBinom" for negative binomial.
+#' @export perturbR 
 #' @examples 
-#' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, cluster_assign = NULL, errbars = FALSE)
+#' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, cluster_assign = NULL, errbars = FALSE, dist = "Normal")
 
 
 perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100, cluster_assign = NULL, errbars = FALSE, dist = "NegBinom"){

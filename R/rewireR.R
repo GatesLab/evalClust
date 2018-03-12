@@ -6,6 +6,12 @@
 #' are considered here.
 #' @param sym.matrix  A symmetric, sparse count matrix object.
 #' @param nperturb The number of edges to randomly alter.
+#' @param dist Option to rewire in a manner that retains overall graph weight regardless of distribution of edge weights. 
+#' This option is invoked by putting any text into this field. Defaults to "NegBinom" for negative binomial.
+#' @export rewireR
+#' #' @examples 
+#' rewireR(exampledata, nperturb=40, dist = "Normal")
+
 
 rewireR <- function(sym.matrix, nperturb, dist)
 {

@@ -5,21 +5,30 @@
 \alias{evalClust}
 \title{Perturb networks and evaluate subgroup structures.}
 \usage{
-perturbR(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100)
+perturbR(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100,
+  cluster_assign = NULL, errbars = FALSE, dist = "NegBinom")
 }
 \arguments{
-\item{sym.matrix}{A symmetric, weighted matrix object}
+\item{sym.matrix}{A symmetric, sparse count matrix object}
 
 \item{plot}{Logical, defaults to TRUE}
 
 \item{resolution}{The percentage of edges to iteratively alter. One percent is default, increase to go quicker.}
 
 \item{reps}{The number of repititions to do for each level of perturbation. Decrease to make it go quicker.}
+
+\item{errbars}{Logical, defaults to FALSE. Option to add error bars of one standard deviation above and below the mean for each point.}
+
+\item{dist}{Option to rewire in a manner that retains overall graph weight regardless of distribution of edge weights. 
+This option is invoked by putting any text into this field. Defaults to "NegBinom" for negative binomial.}
+
+\item{confirm_assign}{Dataframe. Option to provide confirmatory cluster labels contained in the dataframe. Dataframe has 2 columns,
+the first referring to node number, and the second an integer variable referring to cluster label/assignment.}
 }
 \description{
 Randomly rewires networks in increasing degrees of
    perturbation to evaluate stability of community solutions obtained from Walktrap.
 }
 \examples{
-perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1)
+perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, cluster_assign = NULL, errbars = FALSE, dist = "Normal")
 }
