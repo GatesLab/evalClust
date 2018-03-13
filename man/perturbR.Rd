@@ -17,13 +17,13 @@ perturbR(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100,
 
 \item{reps}{The number of repititions to do for each level of perturbation. Decrease to make it go quicker.}
 
+\item{cluster_assign}{Dataframe. Option to provide confirmatory cluster labels contained in the dataframe. Dataframe has 2 columns,
+the first referring to node number, and the second an integer variable referring to cluster label/assignment.}
+
 \item{errbars}{Logical, defaults to FALSE. Option to add error bars of one standard deviation above and below the mean for each point.}
 
 \item{dist}{Option to rewire in a manner that retains overall graph weight regardless of distribution of edge weights. 
 This option is invoked by putting any text into this field. Defaults to "NegBinom" for negative binomial.}
-
-\item{confirm_assign}{Dataframe. Option to provide confirmatory cluster labels contained in the dataframe. Dataframe has 2 columns,
-the first referring to node number, and the second an integer variable referring to cluster label/assignment.}
 }
 \description{
 Randomly rewires networks in increasing degrees of
