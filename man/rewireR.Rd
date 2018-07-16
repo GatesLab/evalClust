@@ -20,3 +20,6 @@ trials as described in "The weighted random graph model" by Garlaschelli,
 New Journal of Physics, 11, (2009), 073005. Only undirected, weigghted count matrices 
 are considered here.
 }
+\examples{
+rewireR(exampledata, nperturb=40, dist = "Normal")
+}
