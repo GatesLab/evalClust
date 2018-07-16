@@ -44,7 +44,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   VI[,1]           <- 0 # when 0 edges are perturbed no variation of information
   ARI[,1]          <- 1 # when 0 edges are perturbed ARI = 1
   iters            <- seq(1,length(percent))
-
+  
   for(p in 1:reps){ # for each degree of perturbation run 100 times
     
     for(k in 2:length(iters)) {
@@ -77,7 +77,6 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   perc10    <- round(.10*length(truemembership))
   perc20    <- round(.20*length(truemembership))
   tochange  <- which(truemembership == comms[max[1]])
-  
   changed10 <- truemembership
   comms <- comms[-max[1]]
   
@@ -114,7 +113,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   modularity.rando[,1]       <-  modularity(walktrap.community(new.g, weights = E(new.g)$weight, steps = 4))
   
   if (plot == TRUE){
-
+    
     VI.rando[,1] <- 0 #when 0 edges are disrupted no variation of information
     ARI.rando[,1]<- 1 #when 0 edges are disrupted ARI = 1
     
@@ -137,7 +136,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
     
     # plots of ARI and VI compared to original
     percentlab <- percent/n.elements
-  
+    
     plotARI <- plot(percentlab, colMeans(ARI), col = "black", main = "Comparison of original result against perturbed graphs: ARI", xlab = "Proportion Perturbed", ylab = "Mean ARI")
     plotARI <-  points(percentlab, colMeans(ARI.rando), col = "red") + lines(percentlab, rep10ari) + lines(percentlab, rep20ari)
     
