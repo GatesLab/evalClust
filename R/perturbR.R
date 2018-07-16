@@ -77,6 +77,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   perc10    <- round(.10*length(truemembership))
   perc20    <- round(.20*length(truemembership))
   tochange  <- which(truemembership == comms[max[1]])
+  
   changed10 <- truemembership
   comms <- comms[-max[1]]
   

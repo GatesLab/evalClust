@@ -10,7 +10,7 @@
 #'     Cara Arizmendi [aut]	
 #'	}
 #' Maintainer: KM Gates \email{gateskm@email.unc.edu}
-#' @import mcclust dils igraph ggplot2
+#' @import igraph ggplot2
 #' @importFrom graphics lines points
 #' @importFrom stats rbinom
 #' @keywords perturbR
