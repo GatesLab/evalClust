@@ -2,7 +2,7 @@
 #' @aliases perturbR-package
 #' @title Perturb Networks
 #' @description The perturbR function incrementally perturbs networks 
-#' and compares the resulting rewired networks with the orignal. 
+#' (using the rewireR function) and compares the resulting rewired networks with the orignal. 
 #' These comparisons aid in understanding the stability of the 
 #' cluster solution. 
 #' @author {KM Gates [aut, cre],\cr
