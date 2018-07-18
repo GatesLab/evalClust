@@ -3,16 +3,21 @@
 #' @title Perturb networks and evaluate subgroup structures.
 #' @description Randomly rewires networks in increasing degrees of
 #'    perturbation to evaluate stability of community solutions obtained from Walktrap.
-#' @param sym.matrix A symmetric, weighted matrix object
+#' @param sym.matrix A symmetric, sparse count matrix object
 #' @param plot Logical, defaults to TRUE
 #' @param resolution The percentage of edges to iteratively alter. One percent is default, increase to go quicker. 
 #' @param reps The number of repititions to do for each level of perturbation. Decrease to make it go quicker. 
-#' @export perturbR
+#' @param cluster_assign Dataframe. Option to provide confirmatory cluster labels contained in the dataframe. Dataframe has 2 columns,
+#' the first referring to node number, and the second an integer variable referring to cluster label/assignment.
+#' @param errbars Logical, defaults to FALSE. Option to add error bars of one standard deviation above and below the mean for each point.
+#' @param dist Option to rewire in a manner that retains overall graph weight regardless of distribution of edge weights. 
+#' This option is invoked by putting any text into this field. Defaults to "NegBinom" for negative binomial.
+#' @export perturbR 
 #' @examples 
-#' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1)
+#' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, cluster_assign = NULL, errbars = FALSE, dist = "Normal")
 
 
-perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
+perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100, cluster_assign = NULL, errbars = FALSE, dist = "NegBinom"){
   
   if (!isSymmetric(unname(sym.matrix))){ 
     # only recommended for count graphs; 
@@ -22,6 +27,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
     
     stop(paste("Symmetric matrix required."))
     
+    
   } else{
     
     sym.matrixg                  <- as.data.frame(sym.matrix)
@@ -30,9 +36,13 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
     g                            <- graph.adjacency(as.matrix(sym.matrixg), mode = "undirected", weighted = TRUE)
     
   }
-  
-  truemembership <- walktrap.community(g, weights = E(g)$weight, steps = 4)$membership
-  
+  if(is.null(cluster_assign)){
+    truemembership <- walktrap.community(g, weights = E(g)$weight, steps = 4)$membership
+    
+  } else {
+    truemembership <- cluster_assign[order(cluster_assign[,1]),]
+    truemembership <- truemembership[,2]
+  }
   # now randomly perturb and rewire
   
   n.elements       <- length(sym.matrix[,1])*(length(sym.matrix[,1])-1)/2 #number of unique elements; symmetric
@@ -49,7 +59,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
     
     for(k in 2:length(iters)) {
       
-      new.v                 <- as.matrix(rewirematrix(sym.matrix, percent[iters[k]]))
+      new.v                 <- as.matrix(rewireR(sym.matrix, nperturb = percent[iters[k]], dist = dist))
       diag(new.v)           <- 0
       new.v[new.v< 0]       <- 0
       new.g                 <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
@@ -67,38 +77,48 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
   comms <- unique(truemembership)
   lengths <- NULL
   
-  for (p in 1:length(comms)){
-    
+  for (p in 1:length(comms))
     lengths[p] <- length(which(truemembership == comms[p]))
-    
-  }
   
-  max       <- which(lengths == max(lengths))
+  #  max       <- which(lengths == max(lengths))
   perc10    <- round(.10*length(truemembership))
   perc20    <- round(.20*length(truemembership))
-  tochange  <- which(truemembership == comms[max[1]])
-  changed10 <- truemembership
-  comms <- comms[-max[1]]
+  #  tochange  <- which(truemembership == comms[max[1]])
+  tochange10 <- sample(seq(1,length(sym.matrix[,1])), perc10)
+  tochange20 <- sample(seq(1,length(sym.matrix[,1])), perc20)
   
-  for (p in 1:perc10){
+  rep10arim <- matrix(,100, 1)
+  rep10vim <- matrix(,100, 1)
+  for (k in 1:100){
+    changed10 <- truemembership
     
-    changed10[tochange[p]] <- comms[sample(length(comms), 1)] #randomly select which one it gets assigned
+    for (p in 1:perc10){
+      commchange <- comms[-truemembership[tochange10[p]]]
+      changed10[tochange10[p]] <- commchange[sample(length(commchange), 1)] #randomly select which community it gets assigned
+    }
     
+    rep10arim[k]  <- arandi(changed10, truemembership)
+    rep10vim[k]   <- vi.dist(changed10, truemembership)
   }
+  rep10ari  <- matrix(mean(rep10arim), 1, length(percent))
+  rep10vi   <- matrix(mean(rep10vim), 1, length(percent))
   
-  rep10ari  <- matrix(arandi(changed10, truemembership), 1, length(percent))
-  rep10vi   <- matrix(vi.dist(changed10, truemembership), 1, length(percent))
-  changed20 <- truemembership
-  
-  for (p in 1:perc20){
+  rep20arim <- matrix(,100, 1)
+  rep20vim <- matrix(,100, 1)
+  for (k in 1:100){
+    changed20 <- truemembership
     
-    changed20[tochange[p]] <- comms[sample(length(comms), 1)]
+    for (p in 1:perc20){
+      commchange <- comms[-truemembership[tochange20[p]]]
+      changed20[tochange20[p]] <- commchange[sample(length(commchange), 1)] #randomly select which community it gets assigned
+    }
     
+    rep20arim[k]  <- arandi(changed20, truemembership)
+    rep20vim[k]   <- vi.dist(changed20, truemembership)
   }
+  rep20ari  <- matrix(mean(rep20arim), 1, length(percent))
+  rep20vi   <- matrix(mean(rep20vim), 1, length(percent))
   
-  # create random graph, rewire, compare to the above in a figure.
-  rep20ari         <- matrix(arandi(changed20, truemembership), 1, length(percent))
-  rep20vi          <- matrix(vi.dist(changed20, truemembership), 1, length(percent))
   rando            <- new.v
   VI.rando         <- matrix(,nrow = reps, ncol = length(percent))
   ARI.rando        <- matrix(,nrow = reps,ncol = length(percent))
@@ -121,7 +141,7 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
       
       for(p in 1:reps){ 
         
-        new.v <-  as.matrix(rewirematrix(rando, percent[k]))
+        new.v <-  as.matrix(rewireR(rando, nperturb = percent[k], dist = dist))
         diag(new.v)      <- 0
         new.v[new.v< 0]  <- 0
         new.g            <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
@@ -137,22 +157,33 @@ perturbR <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100){
     # plots of ARI and VI compared to original
     percentlab <- percent/n.elements
     
-    plotARI <- plot(percentlab, colMeans(ARI), col = "black", main = "Comparison of original result against perturbed graphs: ARI", xlab = "Proportion Perturbed", ylab = "Mean ARI")
-    plotARI <-  points(percentlab, colMeans(ARI.rando), col = "red") + lines(percentlab, rep10ari) + lines(percentlab, rep20ari)
+    plotARI <- plot(percentlab, colMeans(ARI),  pch=19, col = "black", main = "Comparison of original result against perturbed graphs: ARI", xlab = "Proportion Perturbed", ylab = "Mean ARI")
+    if(errbars == TRUE)
+      arrows(percentlab, (colMeans(ARI)-apply(ARI, 2, sd)), percentlab, (colMeans(ARI)+apply(ARI, 2, sd)), length=0.05, angle=90, code=3)
+    plotARI <-  points(percentlab, colMeans(ARI.rando), pch=19, col = "red") + lines(percentlab, rep10ari) + lines(percentlab, rep20ari)
+    if(errbars == TRUE)
+      arrows(percentlab, (colMeans(ARI.rando)-apply(ARI.rando, 2, sd)), percentlab, (colMeans(ARI.rando)+apply(ARI.rando, 2, sd)), length=0.05, angle=90, code=3)
     
-    plotVI <- plot(percentlab, colMeans(VI.rando), col = "red", main = "Comparison of original result against perturbed graphs: VI", xlab = "Proportion Perturbed", ylab = "Mean VI")
-    plotVI <- plotVI + points(percentlab, colMeans(VI), col = "black") + lines(percentlab, rep10vi) + lines(percentlab, rep20vi)
+    plotVI <- plot(percentlab, colMeans(VI.rando), ylim=range(c(0, colMeans(VI.rando)+apply(VI.rando, 2, sd))), pch=19,
+                   col = "red", main = "Comparison of original result against perturbed graphs: VI", xlab = "Proportion Perturbed", ylab = "Mean VI")
+    if(errbars == TRUE)
+      arrows(percentlab, (colMeans(VI.rando)-apply(VI.rando, 2, sd)), percentlab, (colMeans(VI.rando)+apply(VI.rando, 2, sd)), length=0.05, angle=90, code=3)
+    plotVI <- plotVI + points(percentlab, colMeans(VI), pch=19, col = "black") + lines(percentlab, rep10vi) + lines(percentlab, rep20vi)
+    if(errbars == TRUE)
+      arrows(percentlab, (colMeans(VI)-apply(VI, 2, sd)), percentlab, (colMeans(VI)+apply(VI, 2, sd)), length=0.05, angle=90, code=3)
+    
   }
   
   distribution <- sort(as.matrix(modularity.rando[,length(percent)]))
   cutoff <- distribution[round(length(distribution)*.95)]
   
   res <- list(
+    comm.assign = truemembership,
     VI  = VI, # only one column if Plot == FALSE; column is the 20% perturb point
     ARI = ARI,
-    modularity = modularity.value,
     VI.rando = VI.rando, 
     ARI.rando = ARI.rando,
+    modularity = modularity.value,
     modularity.rando = modularity.rando,
     percent = percentlab,
     ari10mark = rep10ari[1],
