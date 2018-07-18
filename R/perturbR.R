@@ -17,7 +17,13 @@
 #' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, cluster_assign = NULL, errbars = FALSE, dist = "Normal")
 
 
-perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, reps = 100, cluster_assign = NULL, errbars = FALSE, dist = "NegBinom"){
+perturbR <- evalClust <- function( sym.matrix, 
+                                   plot = TRUE, 
+                                   resolution = 0.01, 
+                                   reps = 100, 
+                                   cluster_assign = NULL, 
+                                   errbars = FALSE, 
+                                   dist = "NegBinom" ){
   
   if (!isSymmetric(unname(sym.matrix))){ 
     # only recommended for count graphs; 
@@ -159,18 +165,18 @@ perturbR <- evalClust <- function(sym.matrix, plot = TRUE, resolution = 0.01, re
     
     plotARI <- plot(percentlab, colMeans(ARI),  pch=19, col = "black", main = "Comparison of original result against perturbed graphs: ARI", xlab = "Proportion Perturbed", ylab = "Mean ARI")
     if(errbars == TRUE)
-      arrows(percentlab, (colMeans(ARI)-apply(ARI, 2, sd)), percentlab, (colMeans(ARI)+apply(ARI, 2, sd)), length=0.05, angle=90, code=3)
+      graphics::arrows(percentlab, (colMeans(ARI)-apply(ARI, 2, stats::sd)), percentlab, (colMeans(ARI)+apply(ARI, 2, stats::sd)), length=0.05, angle=90, code=3)
     plotARI <-  points(percentlab, colMeans(ARI.rando), pch=19, col = "red") + lines(percentlab, rep10ari) + lines(percentlab, rep20ari)
     if(errbars == TRUE)
-      arrows(percentlab, (colMeans(ARI.rando)-apply(ARI.rando, 2, sd)), percentlab, (colMeans(ARI.rando)+apply(ARI.rando, 2, sd)), length=0.05, angle=90, code=3)
+      graphics::arrows(percentlab, (colMeans(ARI.rando)-apply(ARI.rando, 2, stats::sd)), percentlab, (colMeans(ARI.rando)+apply(ARI.rando, 2, stats::sd)), length=0.05, angle=90, code=3)
     
-    plotVI <- plot(percentlab, colMeans(VI.rando), ylim=range(c(0, colMeans(VI.rando)+apply(VI.rando, 2, sd))), pch=19,
+    plotVI <- plot(percentlab, colMeans(VI.rando), ylim=range(c(0, colMeans(VI.rando)+apply(VI.rando, 2, stats::sd))), pch=19,
                    col = "red", main = "Comparison of original result against perturbed graphs: VI", xlab = "Proportion Perturbed", ylab = "Mean VI")
     if(errbars == TRUE)
-      arrows(percentlab, (colMeans(VI.rando)-apply(VI.rando, 2, sd)), percentlab, (colMeans(VI.rando)+apply(VI.rando, 2, sd)), length=0.05, angle=90, code=3)
+      graphics::arrows(percentlab, (colMeans(VI.rando)-apply(VI.rando, 2, stats::sd)), percentlab, (colMeans(VI.rando)+apply(VI.rando, 2, stats::sd)), length=0.05, angle=90, code=3)
     plotVI <- plotVI + points(percentlab, colMeans(VI), pch=19, col = "black") + lines(percentlab, rep10vi) + lines(percentlab, rep20vi)
     if(errbars == TRUE)
-      arrows(percentlab, (colMeans(VI)-apply(VI, 2, sd)), percentlab, (colMeans(VI)+apply(VI, 2, sd)), length=0.05, angle=90, code=3)
+      graphics::arrows(percentlab, (colMeans(VI)-apply(VI, 2, stats::sd)), percentlab, (colMeans(VI)+apply(VI, 2, stats::sd)), length=0.05, angle=90, code=3)
     
   }
   
