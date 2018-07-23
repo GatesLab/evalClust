@@ -1,6 +1,7 @@
 ---
 title: "The <tt>perturbR</tt>  Vignette"
-author: "KM Gates"
+author: 
+- "KM Gates & ZF Fisher"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -70,7 +71,7 @@ min(which(colMeans(fit5_60$VI)>fit5_60$vi20mark))
 **Find alpha that corresponds with this index:**
 
 ```{r}
-fit5_60$percent[34]
+fit5_60$percent[36]
 ```
 
 
