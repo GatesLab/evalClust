@@ -76,6 +76,12 @@ perturbR <- evalClust <- function( sym.matrix,
     
   }
   
+  # randomly order vector to see modularity distribution
+  modularity.randclust <- matrix(NA, reps, 1)
+  
+  for (p in 1:reps)
+    modularity.randclust[p] <-modularity(g, sample(truemembership))
+  
   # explicitly change 10 and 20 percent of community affiliations to add lines to graph
   comms <- unique(truemembership)
   lengths <- NULL
@@ -128,12 +134,13 @@ perturbR <- evalClust <- function( sym.matrix,
   modularity.rando <- matrix(,nrow = reps, ncol = length(percent))
   plotVI           <- NULL
   plotARI          <- NULL
-  percentlab       <- NULL
-  
+
   diag(new.v)      <- 0
   new.v[new.v< 0]  <- 0
   new.g            <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
   modularity.rando[,1]       <-  modularity(walktrap.community(new.g, weights = E(new.g)$weight, steps = 4))
+  
+  percentlab <- percent/n.elements
   
   if (plot == TRUE){
     
@@ -158,7 +165,6 @@ perturbR <- evalClust <- function( sym.matrix,
     }
     
     # plots of ARI and VI compared to original
-    percentlab <- percent/n.elements
     
     plotARI <- plot(percentlab, colMeans(ARI),  pch=16, col = "black", main = "Comparison of original result against perturbed graphs: ARI", xlab = "Proportion Perturbed", ylab = "Mean ARI")
     if(errbars == TRUE)
