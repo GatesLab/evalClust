@@ -135,6 +135,9 @@ perturbR <- evalClust <- function( sym.matrix,
   new.g            <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
   modularity.rando[,1]       <-  modularity(walktrap.community(new.g, weights = E(new.g)$weight, steps = 4))
   
+  
+  percentlab <- percent/n.elements
+  
   if (plot == TRUE){
     
     VI.rando[,1] <- 0 #when 0 edges are disrupted no variation of information
@@ -158,7 +161,6 @@ perturbR <- evalClust <- function( sym.matrix,
     }
     
     # plots of ARI and VI compared to original
-    percentlab <- percent/n.elements
     
     plotARI <- plot(percentlab, colMeans(ARI),  pch=16, col = "black", main = "Comparison of original result against perturbed graphs: ARI", xlab = "Proportion Perturbed", ylab = "Mean ARI")
     if(errbars == TRUE)
