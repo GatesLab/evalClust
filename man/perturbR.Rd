@@ -24,5 +24,5 @@ Randomly rewires networks in increasing degrees of
    perturbation to evaluate stability of community solutions obtained from Walktrap.
 }
 \examples{
-perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, cluster_assign = NULL, errbars = FALSE, dist = "Normal")
+perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, errbars = FALSE)
 }
