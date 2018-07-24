@@ -1,7 +1,7 @@
 Package: perturbR
 Type: Package
 Title: Random Perturbation of Count Matrices
-Version: 0.1.1
+Version: 0.1.2
 Author: KM Gates [aut, cre], 
     Zachary Fisher [aut], 
     Cara Arizmendi [aut]
