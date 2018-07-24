@@ -10,7 +10,7 @@
 #' @param errbars Logical, defaults to FALSE. Option to add error bars of one standard deviation above and below the mean for each point.
 #' @export perturbR 
 #' @examples 
-#' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, cluster_assign = NULL, errbars = FALSE, dist = "Normal")
+#' perturbR(exampledata, plot=FALSE, resolution=0.10, reps=1, errbars = FALSE)
 
 
 perturbR <- evalClust <- function( sym.matrix, 
