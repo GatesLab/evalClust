@@ -92,17 +92,16 @@ perturbR <- evalClust <- function( sym.matrix,
   #  max       <- which(lengths == max(lengths))
   perc10    <- round(.10*length(truemembership))
   perc20    <- round(.20*length(truemembership))
-  #  tochange  <- which(truemembership == comms[max[1]])
-  tochange10 <- sample(seq(1,length(sym.matrix[,1])), perc10)
-  tochange20 <- sample(seq(1,length(sym.matrix[,1])), perc20)
   
   rep10arim <- matrix(,100, 1)
   rep10vim <- matrix(,100, 1)
   for (k in 1:100){
     changed10 <- truemembership
+    #  tochange  <- which(truemembership == comms[max[1]])
+    tochange10 <- sample(seq(1,length(sym.matrix[,1])), perc10)
     
     for (p in 1:perc10){
-      commchange <- comms[-truemembership[tochange10[p]]]
+      commchange <- comms[-which(comms == truemembership[tochange10[p]])]
       changed10[tochange10[p]] <- commchange[sample(length(commchange), 1)] #randomly select which community it gets assigned
     }
     
@@ -116,9 +115,10 @@ perturbR <- evalClust <- function( sym.matrix,
   rep20vim <- matrix(,100, 1)
   for (k in 1:100){
     changed20 <- truemembership
+    tochange20 <- sample(seq(1,length(sym.matrix[,1])), perc20)
     
     for (p in 1:perc20){
-      commchange <- comms[-truemembership[tochange20[p]]]
+      commchange <- comms[-which(comms == truemembership[tochange20[p]])]
       changed20[tochange20[p]] <- commchange[sample(length(commchange), 1)] #randomly select which community it gets assigned
     }
     
