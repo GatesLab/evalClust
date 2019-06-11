@@ -62,7 +62,7 @@ perturbR <- evalClust <- function( sym.matrix,
     
     for(k in 2:length(iters)) {
       
-      new.v                 <- as.matrix(rewireR(sym.matrix, nperturb = percent[iters[k]], dist = dist))
+      new.v                 <- as.matrix(rewireR(sym.matrix, nperturb = percent[iters[k]], dist = "Norm"))
       diag(new.v)           <- 0
       new.v[new.v< 0]       <- 0
       new.g                 <- graph.adjacency(as.matrix(new.v), mode = "undirected", weighted = TRUE)
