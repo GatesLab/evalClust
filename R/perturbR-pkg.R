@@ -13,5 +13,6 @@
 #' @import igraph ggplot2
 #' @importFrom graphics lines points
 #' @importFrom stats rbinom
+#' @useDynLib perturbR
 #' @keywords perturbR
 NULL
