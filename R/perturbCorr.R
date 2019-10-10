@@ -72,7 +72,8 @@ perturbCorr <- evalCorr <- function(sym.matrix,
   res <- list(
     randmats = randmats,
     modularity = modularity.original,
-    modularity.rando = modularity.rando
+    modularity.rando = modularity.rando, 
+    cutoff = cutoff
   )
   return(res)
 }
