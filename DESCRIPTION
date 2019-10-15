@@ -4,7 +4,8 @@ Title: Random Perturbation of Count Matrices
 Version: 0.1.3
 Author: KM Gates [aut, cre], 
     Zachary Fisher [aut], 
-    Cara Arizmendi [aut]
+    Cara Arizmendi [aut],
+    Teague R. Henry [ctb]
 Maintainer: KM Gates <gateskm@email.unc.edu>
 Description: The perturbR() function incrementally perturbs network edges (using the   rewireR function)and compares the resulting community detection solutions 
     from the rewired networks with the solution found for the original network. 
