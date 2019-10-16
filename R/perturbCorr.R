@@ -5,7 +5,7 @@
 #' generating correlation matrices that have the same strength distribution as the original matrix.  Returns modularity of each randomized correlation matrix.
 #' @param sym.matrix A symmetric, correlation or covariance matrix object
 #' @param sampleSize The sample size for a correlation matrix, lower values for more sampling error
-#' @param n Number of random correlations matrices to return
+#' @param n Number of random correlations matrices to return.  Default is 100.
 #' @param tol Tolerance for configuration model convergence. Default to .0001
 #' @param stepSize Step size for configuration model NR solver. Increase to increase convergence speed. Default to .001
 #' @param verbose Logical, Print convergence information to screen.  Defaults to FALSE.
@@ -18,12 +18,16 @@
 
 perturbCorr <- evalCorr <- function(sym.matrix, 
                                    plot = TRUE, 
-                                   sampleSize = NULL,
-                                   n = NULL,
+                                   sampleSize,
+                                   n = 100,
                                    tol = .001,
                                    stepSize = .001,
                                    verbose = FALSE
                                    ){
+  
+  if(is.null(sampleSize)){
+    stop(paste("Sample size required"))
+  }
   
   if (!isSymmetric(unname(sym.matrix))){ 
     # only recommended for count graphs; 
