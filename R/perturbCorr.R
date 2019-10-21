@@ -25,10 +25,6 @@ perturbCorr <- evalCorr <- function(sym.matrix,
                                    verbose = FALSE
                                    ){
   
-  if(is.null(sampleSize)){
-    stop(paste("Sample size required"))
-  }
-  
   if (!isSymmetric(unname(sym.matrix))){ 
     # only recommended for count graphs; 
     # for correlation or those with (-) read in matrix
@@ -39,6 +35,12 @@ perturbCorr <- evalCorr <- function(sym.matrix,
     
     
   } else{
+    
+    det.mat <- det(sym.matrix)
+    
+    if(det.mat<1e-50){
+      sym.matrix<-cov2cor(sym.matrix+.01*(diag(dim(sym.matrix)[1])))
+    }
     
     sym.matrixg                  <- as.data.frame(sym.matrix)
     g                            <- graph.adjacency(as.matrix(sym.matrixg), mode = "undirected", weighted = TRUE)
@@ -55,6 +57,9 @@ perturbCorr <- evalCorr <- function(sym.matrix,
   
   randmats <- corrmat_rand(sym.matrix, sampleSize = sampleSize, n=n, tol=tol, stepSize=stepSize, verbose=verbose)
   randmats <- randmats[[1]]
+  
+ # new.g <- apply(randmats, c(3), graph.adjacency, mode = "undirected", weighted = TRUE)
+ # clust.sol <- lapply(new.g, walktrap.community, weights = E(new.g[[X]])$weight)
   
   for(p in 1:n){ 
       new.g                 <- graph.adjacency(as.matrix(randmats[,,p]), mode = "undirected", weighted = TRUE)
