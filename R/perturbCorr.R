@@ -38,7 +38,7 @@ perturbCorr <- evalCorr <- function(sym.matrix,
     
     det.mat <- det(sym.matrix)
     
-    if(det.mat<1e-50){
+    if(det.mat<1e-25){
       sym.matrix<-cov2cor(sym.matrix+.01*(diag(dim(sym.matrix)[1])))
     }
     
