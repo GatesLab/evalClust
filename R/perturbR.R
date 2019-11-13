@@ -79,12 +79,6 @@ perturbR <- evalClust <- function( sym.matrix,
   distribution <- sort(as.matrix(modularity.value[,length(modularity.value[1,])]))
   cutoff <- distribution[round(length(distribution)*.95)]
   
-  # randomly order vector to see modularity distribution
-  modularity.randclust <- matrix(NA, reps, 1)
-  
-  for (p in 1:reps)
-    modularity.randclust[p] <-modularity(g, sample(truemembership))
-  
   # explicitly change 10 and 20 percent of community affiliations to add lines to graph
   comms <- unique(truemembership)
   lengths <- NULL
