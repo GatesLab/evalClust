@@ -76,6 +76,9 @@ perturbR <- evalClust <- function( sym.matrix,
     
   }
   
+  distribution <- sort(as.matrix(modularity.value[,length(modularity.value[1,])]))
+  cutoff <- distribution[round(length(distribution)*.95)]
+  
   # randomly order vector to see modularity distribution
   modularity.randclust <- matrix(NA, reps, 1)
   
@@ -182,9 +185,6 @@ perturbR <- evalClust <- function( sym.matrix,
       graphics::arrows(percentlab, (colMeans(VI)-apply(VI, 2, stats::sd)), percentlab, (colMeans(VI)+apply(VI, 2, stats::sd)), length=0.05, angle=90, code=3)
     
   }
-  
-  distribution <- sort(as.matrix(modularity.rando[,length(percent)]))
-  cutoff <- distribution[round(length(distribution)*.95)]
   
   res <- list(
     comm.assign = truemembership,
